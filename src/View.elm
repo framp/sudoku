@@ -31,7 +31,8 @@ boardStyle = [ ("width", "558px"), ("height", "558px"), ("cursor", "pointer")
 viewBoard : Board -> Html Msg
 viewBoard model =
   div [ style boardStyle ]
-    (Array.toList (Array.indexedMap viewCell model))
+    <| Array.toList 
+    <| Array.indexedMap viewCell model
 
 filledCellStyle : List ( String, String )
 filledCellStyle = [ ("width", "60px"), ("height", "60px"), ("float", "left")
@@ -52,7 +53,8 @@ viewCell index { selected, hints } =
         [ text (toString val) ]
     Nothing -> 
       div [ style emptyCellStyle ] 
-        (List.map (viewHint index hints) (List.range 1 9))
+        <| List.map (viewHint index hints) 
+        <| List.range 1 9
 
 hintStyle : Bool -> List ( String, String )
 hintStyle selected = [ ("width", "20px"), ("height", "20px"), ("float", "left")
@@ -63,8 +65,8 @@ viewHint : CellIndex -> Set Hint -> Hint -> Html Msg
 viewHint cellIndex hints hint = 
   let 
     selected = Set.member hint hints
-    action = if Set.member hint hints then RemoveHint hint cellIndex else InsertHint hint cellIndex
+    action = if selected then RemoveHint hint cellIndex else InsertHint hint cellIndex
   in
     div [ style (hintStyle selected)
-        , onClick action, onDoubleClick (Select hint cellIndex)] 
+        , onClick action, onDoubleClick (Select hint cellIndex) ] 
       [ text (toString hint) ]

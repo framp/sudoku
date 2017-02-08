@@ -2,7 +2,7 @@ port module State exposing (..)
 
 import Set exposing (Set)
 import Array exposing (Array)
-import Maybe exposing (andThen)
+import Maybe exposing (map)
 import Types exposing (..)
 
 port solve : Array Int -> Cmd msg
@@ -49,8 +49,7 @@ deselect cell = { cell | selected = Nothing }
 transformElement : Int -> (a -> a) -> Array a -> Array a
 transformElement index transform array = 
   let
-    newElement = Array.get index array 
-      |> andThen (transform >> Just) 
+    newElement = Array.get index array |> Maybe.map transform
   in
     case newElement of
       Nothing -> array

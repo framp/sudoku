@@ -8773,17 +8773,14 @@ var _user$project$Types$InsertHint = F2(
 var _user$project$State$transformElement = F3(
 	function (index, transform, array) {
 		var newElement = A2(
-			_elm_lang$core$Maybe$andThen,
-			function (_p0) {
-				return _elm_lang$core$Maybe$Just(
-					transform(_p0));
-			},
+			_elm_lang$core$Maybe$map,
+			transform,
 			A2(_elm_lang$core$Array$get, index, array));
-		var _p1 = newElement;
-		if (_p1.ctor === 'Nothing') {
+		var _p0 = newElement;
+		if (_p0.ctor === 'Nothing') {
 			return array;
 		} else {
-			return A3(_elm_lang$core$Array$set, index, _p1._0, array);
+			return A3(_elm_lang$core$Array$set, index, _p0._0, array);
 		}
 	});
 var _user$project$State$deselect = function (cell) {
@@ -8830,15 +8827,15 @@ var _user$project$State$solve = _elm_lang$core$Native_Platform.outgoingPort(
 	});
 var _user$project$State$update = F2(
 	function (msg, model) {
-		var _p2 = msg;
-		switch (_p2.ctor) {
+		var _p1 = msg;
+		switch (_p1.ctor) {
 			case 'InsertHint':
 				return {
 					ctor: '_Tuple2',
 					_0: A3(
 						_user$project$State$transformElement,
-						_p2._1,
-						_user$project$State$insertHint(_p2._0),
+						_p1._1,
+						_user$project$State$insertHint(_p1._0),
 						model),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
@@ -8847,8 +8844,8 @@ var _user$project$State$update = F2(
 					ctor: '_Tuple2',
 					_0: A3(
 						_user$project$State$transformElement,
-						_p2._1,
-						_user$project$State$removeHint(_p2._0),
+						_p1._1,
+						_user$project$State$removeHint(_p1._0),
 						model),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
@@ -8857,15 +8854,15 @@ var _user$project$State$update = F2(
 					ctor: '_Tuple2',
 					_0: A3(
 						_user$project$State$transformElement,
-						_p2._1,
-						_user$project$State$select(_p2._0),
+						_p1._1,
+						_user$project$State$select(_p1._0),
 						model),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'Deselect':
 				return {
 					ctor: '_Tuple2',
-					_0: A3(_user$project$State$transformElement, _p2._0, _user$project$State$deselect, model),
+					_0: A3(_user$project$State$transformElement, _p1._0, _user$project$State$deselect, model),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'Clear':
@@ -8878,10 +8875,10 @@ var _user$project$State$update = F2(
 						_user$project$Types$fromBoard(model))
 				};
 			default:
-				if ((_p2._0.ctor === '::') && (_p2._0._1.ctor === '[]')) {
+				if ((_p1._0.ctor === '::') && (_p1._0._1.ctor === '[]')) {
 					return {
 						ctor: '_Tuple2',
-						_0: _user$project$Types$toBoard(_p2._0._0),
+						_0: _user$project$Types$toBoard(_p1._0._0),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
@@ -8930,8 +8927,8 @@ var _user$project$View$hintStyle = function (selected) {
 };
 var _user$project$View$viewHint = F3(
 	function (cellIndex, hints, hint) {
-		var action = A2(_elm_lang$core$Set$member, hint, hints) ? A2(_user$project$Types$RemoveHint, hint, cellIndex) : A2(_user$project$Types$InsertHint, hint, cellIndex);
 		var selected = A2(_elm_lang$core$Set$member, hint, hints);
+		var action = selected ? A2(_user$project$Types$RemoveHint, hint, cellIndex) : A2(_user$project$Types$InsertHint, hint, cellIndex);
 		return A2(
 			_elm_lang$html$Html$div,
 			{
