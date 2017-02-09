@@ -48,10 +48,10 @@ deselect cell = { cell | selected = Nothing }
 
 transformElement : Int -> (a -> a) -> Array a -> Array a
 transformElement index transform array = 
-  Maybe.withDefault array 
-    (Array.get index array 
+    Array.get index array 
       |> Maybe.map transform 
-      |> Maybe.map (\val -> Array.set index val array))
+      |> Maybe.map (\val -> Array.set index val array)
+      |> Maybe.withDefault array 
 
 subscriptions : Board -> Sub Msg
 subscriptions model =
