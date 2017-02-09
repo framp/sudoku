@@ -2,7 +2,7 @@ port module State exposing (..)
 
 import Set exposing (Set)
 import Array exposing (Array)
-import Maybe exposing (map)
+import Maybe exposing (map, withDefault)
 import Types exposing (..)
 
 port solve : Array Int -> Cmd msg
@@ -48,12 +48,10 @@ deselect cell = { cell | selected = Nothing }
 
 transformElement : Int -> (a -> a) -> Array a -> Array a
 transformElement index transform array = 
-  let
-    newElement = Array.get index array |> Maybe.map transform
-  in
-    case newElement of
-      Nothing -> array
-      Just val -> Array.set index val array
+  Maybe.withDefault array 
+    (Array.get index array 
+      |> Maybe.map transform 
+      |> Maybe.map (\val -> Array.set index val array))
 
 subscriptions : Board -> Sub Msg
 subscriptions model =
