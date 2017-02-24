@@ -4,6 +4,9 @@ import Array exposing (Array)
 import Set exposing (Set)
 
 type alias Board = Array Cell
+type alias Game = 
+  { board: Board
+  , select: Bool }
 type alias Cell = 
   { selected: Maybe Int
   , hints: Set Hint }
@@ -16,6 +19,7 @@ type Msg
     | Select Int CellIndex
     | Deselect CellIndex
     | Solve
+    | SelectToggle
     | Clear
     | Solutions (List (Array Int))
 

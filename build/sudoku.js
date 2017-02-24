@@ -8745,6 +8745,10 @@ var _user$project$Types$toCell = function (number) {
 	};
 };
 var _user$project$Types$toBoard = _elm_lang$core$Array$map(_user$project$Types$toCell);
+var _user$project$Types$Game = F2(
+	function (a, b) {
+		return {board: a, select: b};
+	});
 var _user$project$Types$Cell = F2(
 	function (a, b) {
 		return {selected: a, hints: b};
@@ -8753,6 +8757,7 @@ var _user$project$Types$Solutions = function (a) {
 	return {ctor: 'Solutions', _0: a};
 };
 var _user$project$Types$Clear = {ctor: 'Clear'};
+var _user$project$Types$SelectToggle = {ctor: 'SelectToggle'};
 var _user$project$Types$Solve = {ctor: 'Solve'};
 var _user$project$Types$Deselect = function (a) {
 	return {ctor: 'Deselect', _0: a};
@@ -8816,7 +8821,10 @@ var _user$project$State$insertHint = F2(
 	});
 var _user$project$State$init = {
 	ctor: '_Tuple2',
-	_0: _user$project$Types$toBoard(_user$project$Types$heart),
+	_0: {
+		board: _user$project$Types$toBoard(_user$project$Types$heart),
+		select: false
+	},
 	_1: _elm_lang$core$Platform_Cmd$none
 };
 var _user$project$State$solve = _elm_lang$core$Native_Platform.outgoingPort(
@@ -8834,53 +8842,87 @@ var _user$project$State$update = F2(
 			case 'InsertHint':
 				return {
 					ctor: '_Tuple2',
-					_0: A3(
-						_user$project$State$transformElement,
-						_p0._1,
-						_user$project$State$insertHint(_p0._0),
-						model),
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							board: A3(
+								_user$project$State$transformElement,
+								_p0._1,
+								_user$project$State$insertHint(_p0._0),
+								model.board)
+						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'RemoveHint':
 				return {
 					ctor: '_Tuple2',
-					_0: A3(
-						_user$project$State$transformElement,
-						_p0._1,
-						_user$project$State$removeHint(_p0._0),
-						model),
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							board: A3(
+								_user$project$State$transformElement,
+								_p0._1,
+								_user$project$State$removeHint(_p0._0),
+								model.board)
+						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'Select':
 				return {
 					ctor: '_Tuple2',
-					_0: A3(
-						_user$project$State$transformElement,
-						_p0._1,
-						_user$project$State$select(_p0._0),
-						model),
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							board: A3(
+								_user$project$State$transformElement,
+								_p0._1,
+								_user$project$State$select(_p0._0),
+								model.board)
+						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'Deselect':
 				return {
 					ctor: '_Tuple2',
-					_0: A3(_user$project$State$transformElement, _p0._0, _user$project$State$deselect, model),
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							board: A3(_user$project$State$transformElement, _p0._0, _user$project$State$deselect, model.board)
+						}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'Clear':
-				return {ctor: '_Tuple2', _0: _user$project$Types$emptyBoard, _1: _elm_lang$core$Platform_Cmd$none};
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{board: _user$project$Types$emptyBoard}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
 			case 'Solve':
 				return {
 					ctor: '_Tuple2',
 					_0: model,
 					_1: _user$project$State$solve(
-						_user$project$Types$fromBoard(model))
+						_user$project$Types$fromBoard(model.board))
+				};
+			case 'SelectToggle':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{select: !model.select}),
+					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			default:
 				if ((_p0._0.ctor === '::') && (_p0._0._1.ctor === '[]')) {
 					return {
 						ctor: '_Tuple2',
-						_0: _user$project$Types$toBoard(_p0._0._0),
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								board: _user$project$Types$toBoard(_p0._0._0)
+							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
@@ -8896,56 +8938,20 @@ var _user$project$State$subscriptions = function (model) {
 	return _user$project$State$solutions(_user$project$Types$Solutions);
 };
 
-var _user$project$View$hintStyle = function (selected) {
-	return {
-		ctor: '::',
-		_0: {ctor: '_Tuple2', _0: 'width', _1: '20px'},
-		_1: {
-			ctor: '::',
-			_0: {ctor: '_Tuple2', _0: 'height', _1: '20px'},
-			_1: {
-				ctor: '::',
-				_0: {ctor: '_Tuple2', _0: 'float', _1: 'left'},
-				_1: {
-					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: 'font-size', _1: '20px'},
-					_1: {
-						ctor: '::',
-						_0: {ctor: '_Tuple2', _0: 'line-height', _1: '20px'},
-						_1: {
-							ctor: '::',
-							_0: {
-								ctor: '_Tuple2',
-								_0: 'color',
-								_1: selected ? 'black' : 'lightgray'
-							},
-							_1: {ctor: '[]'}
-						}
-					}
-				}
-			}
-		}
-	};
-};
-var _user$project$View$viewHint = F3(
-	function (cellIndex, hints, hint) {
+var _user$project$View$viewHint = F4(
+	function (selectMode, cellIndex, hints, hint) {
 		var selected = A2(_elm_lang$core$Set$member, hint, hints);
-		var action = selected ? A2(_user$project$Types$RemoveHint, hint, cellIndex) : A2(_user$project$Types$InsertHint, hint, cellIndex);
+		var action = selectMode ? A2(_user$project$Types$Select, hint, cellIndex) : (selected ? A2(_user$project$Types$RemoveHint, hint, cellIndex) : A2(_user$project$Types$InsertHint, hint, cellIndex));
 		return A2(
 			_elm_lang$html$Html$div,
 			{
 				ctor: '::',
-				_0: _elm_lang$html$Html_Attributes$style(
-					_user$project$View$hintStyle(selected)),
+				_0: _elm_lang$html$Html_Attributes$class(
+					selected ? 'hint selected' : 'hint'),
 				_1: {
 					ctor: '::',
 					_0: _elm_lang$html$Html_Events$onClick(action),
-					_1: {
-						ctor: '::',
-						_0: _elm_lang$html$Html_Events$onDoubleClick(
-							A2(_user$project$Types$Select, hint, cellIndex)),
-						_1: {ctor: '[]'}
-					}
+					_1: {ctor: '[]'}
 				}
 			},
 			{
@@ -8955,73 +8961,32 @@ var _user$project$View$viewHint = F3(
 				_1: {ctor: '[]'}
 			});
 	});
-var _user$project$View$emptyCellStyle = {
-	ctor: '::',
-	_0: {ctor: '_Tuple2', _0: 'width', _1: '60px'},
-	_1: {
-		ctor: '::',
-		_0: {ctor: '_Tuple2', _0: 'height', _1: '60px'},
-		_1: {
-			ctor: '::',
-			_0: {ctor: '_Tuple2', _0: 'float', _1: 'left'},
-			_1: {
-				ctor: '::',
-				_0: {ctor: '_Tuple2', _0: 'font-size', _1: '60px'},
-				_1: {
-					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: 'line-height', _1: '60px'},
-					_1: {
-						ctor: '::',
-						_0: {ctor: '_Tuple2', _0: 'border', _1: '1px solid black'},
-						_1: {ctor: '[]'}
-					}
-				}
-			}
-		}
-	}
-};
-var _user$project$View$filledCellStyle = {
-	ctor: '::',
-	_0: {ctor: '_Tuple2', _0: 'width', _1: '60px'},
-	_1: {
-		ctor: '::',
-		_0: {ctor: '_Tuple2', _0: 'height', _1: '60px'},
-		_1: {
-			ctor: '::',
-			_0: {ctor: '_Tuple2', _0: 'float', _1: 'left'},
-			_1: {
-				ctor: '::',
-				_0: {ctor: '_Tuple2', _0: 'font-size', _1: '60px'},
-				_1: {
-					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: 'line-height', _1: '60px'},
-					_1: {
-						ctor: '::',
-						_0: {ctor: '_Tuple2', _0: 'border', _1: '1px solid black'},
-						_1: {ctor: '[]'}
-					}
-				}
-			}
-		}
-	}
-};
-var _user$project$View$viewCell = F2(
-	function (index, _p0) {
+var _user$project$View$viewCell = F3(
+	function (selectMode, index, _p0) {
 		var _p1 = _p0;
 		var _p2 = _p1.selected;
 		if (_p2.ctor === 'Just') {
 			return A2(
 				_elm_lang$html$Html$div,
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$style(_user$project$View$filledCellStyle),
-					_1: {
+				_elm_lang$core$List$concat(
+					{
 						ctor: '::',
-						_0: _elm_lang$html$Html_Events$onClick(
-							_user$project$Types$Deselect(index)),
-						_1: {ctor: '[]'}
-					}
-				},
+						_0: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('cell filled-cell'),
+							_1: {ctor: '[]'}
+						},
+						_1: {
+							ctor: '::',
+							_0: selectMode ? {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onClick(
+									_user$project$Types$Deselect(index)),
+								_1: {ctor: '[]'}
+							} : {ctor: '[]'},
+							_1: {ctor: '[]'}
+						}
+					}),
 				{
 					ctor: '::',
 					_0: _elm_lang$html$Html$text(
@@ -9033,123 +8998,117 @@ var _user$project$View$viewCell = F2(
 				_elm_lang$html$Html$div,
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html_Attributes$style(_user$project$View$emptyCellStyle),
+					_0: _elm_lang$html$Html_Attributes$class('cell empty-cell'),
 					_1: {ctor: '[]'}
 				},
 				A2(
 					_elm_lang$core$List$map,
-					A2(_user$project$View$viewHint, index, _p1.hints),
+					A3(_user$project$View$viewHint, selectMode, index, _p1.hints),
 					A2(_elm_lang$core$List$range, 1, 9)));
 		}
 	});
-var _user$project$View$boardStyle = {
-	ctor: '::',
-	_0: {ctor: '_Tuple2', _0: 'width', _1: '558px'},
-	_1: {
-		ctor: '::',
-		_0: {ctor: '_Tuple2', _0: 'height', _1: '558px'},
-		_1: {
-			ctor: '::',
-			_0: {ctor: '_Tuple2', _0: 'cursor', _1: 'pointer'},
-			_1: {
+var _user$project$View$viewBoard = F2(
+	function (selectMode, model) {
+		return A2(
+			_elm_lang$html$Html$div,
+			{
 				ctor: '::',
-				_0: {ctor: '_Tuple2', _0: 'text-align', _1: 'center'},
-				_1: {
-					ctor: '::',
-					_0: {ctor: '_Tuple2', _0: 'outline-style', _1: 'none'},
-					_1: {ctor: '[]'}
-				}
-			}
-		}
-	}
-};
-var _user$project$View$viewBoard = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$style(_user$project$View$boardStyle),
-			_1: {ctor: '[]'}
-		},
-		_elm_lang$core$Array$toList(
-			A2(_elm_lang$core$Array$indexedMap, _user$project$View$viewCell, model)));
-};
-var _user$project$View$noSelect = A2(
-	_elm_lang$core$List$map,
-	function (prop) {
-		return {ctor: '_Tuple2', _0: prop, _1: 'none'};
-	},
-	{
-		ctor: '::',
-		_0: '-webkit-touch-callout',
-		_1: {
-			ctor: '::',
-			_0: '-webkit-user-select',
-			_1: {
-				ctor: '::',
-				_0: '-khtml-user-select',
-				_1: {
-					ctor: '::',
-					_0: '-moz-user-select',
-					_1: {
-						ctor: '::',
-						_0: '-ms-user-select',
-						_1: {
-							ctor: '::',
-							_0: 'user-select',
-							_1: {ctor: '[]'}
-						}
-					}
-				}
-			}
-		}
+				_0: _elm_lang$html$Html_Attributes$class('board'),
+				_1: {ctor: '[]'}
+			},
+			_elm_lang$core$Array$toList(
+				A2(
+					_elm_lang$core$Array$indexedMap,
+					_user$project$View$viewCell(selectMode),
+					model)));
 	});
-var _user$project$View$containerStyle = {
-	ctor: '::',
-	_0: {ctor: '_Tuple2', _0: 'font-family', _1: 'Helvetica'},
-	_1: _user$project$View$noSelect
-};
 var _user$project$View$view = function (model) {
 	return A2(
 		_elm_lang$html$Html$div,
+		{ctor: '[]'},
 		{
 			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$style(_user$project$View$containerStyle),
-			_1: {ctor: '[]'}
-		},
-		{
-			ctor: '::',
-			_0: _user$project$View$viewBoard(model),
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$class('container'),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: A2(_user$project$View$viewBoard, model.select, model.board),
+					_1: {ctor: '[]'}
+				}),
 			_1: {
 				ctor: '::',
 				_0: A2(
-					_elm_lang$html$Html$button,
+					_elm_lang$html$Html$div,
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html_Events$onClick(_user$project$Types$Solve),
+						_0: _elm_lang$html$Html_Attributes$class('container'),
 						_1: {ctor: '[]'}
 					},
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html$text('Solve'),
-						_1: {ctor: '[]'}
+						_0: A2(
+							_elm_lang$html$Html$button,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$class(
+									model.select ? 'select selected' : 'select'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Events$onClick(_user$project$Types$SelectToggle),
+									_1: {ctor: '[]'}
+								}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('Select'),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$button,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('solve'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Events$onClick(_user$project$Types$Solve),
+										_1: {ctor: '[]'}
+									}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('Solve'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$button,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$class('clear'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Events$onClick(_user$project$Types$Clear),
+											_1: {ctor: '[]'}
+										}
+									},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('Clear'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							}
+						}
 					}),
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$button,
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html_Events$onClick(_user$project$Types$Clear),
-							_1: {ctor: '[]'}
-						},
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html$text('Clear'),
-							_1: {ctor: '[]'}
-						}),
-					_1: {ctor: '[]'}
-				}
+				_1: {ctor: '[]'}
 			}
 		});
 };

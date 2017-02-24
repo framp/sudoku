@@ -8,31 +8,34 @@ import Types exposing (..)
 port solve : Array Int -> Cmd msg
 port solutions : (List (Array Int) -> msg) -> Sub msg
 
-init : (Board, Cmd Msg)
-init = (toBoard heart, Cmd.none)
+init : (Game, Cmd Msg)
+init = ({ board = toBoard heart, select = False }, Cmd.none)
 
-update : Msg -> Board -> (Board, Cmd Msg)
+update : Msg -> Game -> (Game, Cmd Msg)
 update msg model =
   case msg of
-    InsertHint number cellIndex ->
-      (transformElement cellIndex (insertHint number) model, Cmd.none)
+    InsertHint number cellIndex -> ({ model | board =
+      (transformElement cellIndex (insertHint number) model.board) }, Cmd.none)
 
-    RemoveHint number cellIndex ->
-      (transformElement cellIndex (removeHint number) model, Cmd.none)
+    RemoveHint number cellIndex -> ({ model | board =
+      (transformElement cellIndex (removeHint number) model.board) }, Cmd.none)
 
-    Select number cellIndex ->
-      (transformElement cellIndex (select number) model, Cmd.none)
+    Select number cellIndex -> ({ model | board =
+      (transformElement cellIndex (select number) model.board) }, Cmd.none)
     
-    Deselect cellIndex ->
-      (transformElement cellIndex deselect model, Cmd.none)
+    Deselect cellIndex -> ({ model | board =
+      (transformElement cellIndex deselect model.board) }, Cmd.none)
     
-    Clear -> (emptyBoard, Cmd.none)
+    Clear -> ({ model | board = emptyBoard }, Cmd.none)
 
-    Solve -> (model, solve (fromBoard model))
+    Solve -> (model, solve (fromBoard model.board))
 
-    Solutions [first] -> (toBoard first, Cmd.none)
+    SelectToggle -> ({ model | select = not model.select }, Cmd.none)
+
+    Solutions [first] -> ({ model | board = toBoard first }, Cmd.none)
 
     Solutions _ -> (model, Cmd.none)
+
       
 insertHint : Int -> Cell -> Cell
 insertHint number cell = { cell | hints = Set.insert number cell.hints }
@@ -53,6 +56,6 @@ transformElement index transform array =
       |> Maybe.map (\val -> Array.set index val array)
       |> Maybe.withDefault array 
 
-subscriptions : Board -> Sub Msg
+subscriptions : Game -> Sub Msg
 subscriptions model =
   solutions Solutions
