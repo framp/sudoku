@@ -1,9 +1,10 @@
 {
   "name": "sudoku",
   "scripts": {
-    "build": "elm-make ./src/App.elm --output=./build/elm.js && cat build/elm.js src/ports/solver.js > build/sudoku.js && rm build/elm.js"
+    "build": "elm-make ./src/App.elm --output=./build/elm.js && cat build/elm.js src/ports/solver.js > build/sudoku.js && rm build/elm.js && uglifyjs build/sudoku.js -o build/sudoku.min.js"
   },
   "devDependencies": {
-    "elm": "^0.18.0"
+    "elm": "^0.18.0",
+    "uglify-js": "^2.7.5"
   }
 }
