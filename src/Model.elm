@@ -13,6 +13,7 @@ type alias Cell =
   , valid: Bool }
 type alias CellIndex = Int
 type alias Hint = Int
+type alias Flags = Maybe (Array Int)
 
 type Msg
     = InsertHint Int CellIndex
