@@ -1,7 +1,7 @@
 {
   "name": "sudoku",
   "scripts": {
-    "build": "cp ./src/ports/solver.js ./build/solver.js && elm-make ./src/App.elm --output=./build/sudoku.js"
+    "build": "elm-make ./src/App.elm --output=./build/elm.js && cat build/elm.js src/ports/solver.js > build/sudoku.js && rm build/elm.js"
   },
   "devDependencies": {
     "elm": "^0.18.0"

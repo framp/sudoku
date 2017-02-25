@@ -3,7 +3,7 @@ port module State exposing (..)
 import Set exposing (Set)
 import Array exposing (Array)
 import Maybe exposing (map, withDefault)
-import Types exposing (..)
+import Model exposing (..)
 
 port solve : Array Int -> Cmd msg
 port solutions : (List (Array Int) -> msg) -> Sub msg
@@ -21,10 +21,10 @@ update msg model =
       (transformElement cellIndex (removeHint number) model.board) }, Cmd.none)
 
     Select number cellIndex -> ({ model | board =
-      (transformElement cellIndex (select number) model.board) }, Cmd.none)
+      validateBoard (transformElement cellIndex (select cellIndex number) model.board) }, Cmd.none)
     
     Deselect cellIndex -> ({ model | board =
-      (transformElement cellIndex deselect model.board) }, Cmd.none)
+      validateBoard (transformElement cellIndex deselect model.board) }, Cmd.none)
     
     Clear -> ({ model | board = emptyBoard }, Cmd.none)
 
@@ -43,8 +43,8 @@ insertHint number cell = { cell | hints = Set.insert number cell.hints }
 removeHint : Int -> Cell -> Cell
 removeHint number cell = { cell | hints = Set.remove number cell.hints }
 
-select : Int -> Cell -> Cell
-select number cell = { cell | selected = Just number }
+select : CellIndex -> Int -> Cell -> Cell
+select index number cell = { cell | selected = Just number }
 
 deselect : Cell -> Cell
 deselect cell = { cell | selected = Nothing }

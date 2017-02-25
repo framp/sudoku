@@ -1,7 +1,7 @@
 module App exposing (main)
 
 import Html
-import Types exposing (Game, Msg)
+import Model exposing (Game, Msg)
 import State exposing (init, update, subscriptions)
 import View exposing (view)
 

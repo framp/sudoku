@@ -9,14 +9,23 @@
   <style>
     html, body {
       width: 100%;
+      background: #E3E6D9;
+      margin: 0;
+      padding: 0;
     }
     .container {
       width: 96%;
       text-align: center;
-      font-family: Helvetica; 
+      font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
+      -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
       user-select: none;
       margin: auto;
-      max-width: 567px;
+      max-width: 566px;
     }
     .board {
       display: inline-block;
@@ -25,8 +34,8 @@
       outline-style: none;
       text-align: center;
       box-sizing: border-box;
-      border-top: 2px solid #222;
-      border-left: 2px solid #222;
+      border-top: 2px solid #271d26;
+      border-left: 2px solid #271d26;
     }
     .board::after {
       visibility: hidden;
@@ -42,15 +51,18 @@
       width: 33.33333%;
       height: 0;
       padding-bottom: 33.33333%;
-      color: #d3d3d3;
+      color: #B2B6AB;
       font-size: 2.8vw;
     }
     .hint.selected {
-      color: #444;
+      color: #402F3F;
     }
     .filled-cell {
-      color: #444;
+      color: #402F3F;
       font-size: 9.3vw;
+    }
+    .cell.invalid {
+      color: #B9485A;
     }
     .cell {
       position: relative;
@@ -60,8 +72,9 @@
       padding-bottom: 11.11111%;
       text-align: center;
       box-sizing: border-box;
-      border-bottom: 2px solid #222;
-      border-right: 2px solid #222;
+      border-bottom: 2px solid #402F3F;
+      border-right: 2px solid #402F3F;
+      background-color: none; 
     }
     .cell:nth-child(3),.cell:nth-child(6),
     .cell:nth-child(12),.cell:nth-child(15),
@@ -73,7 +86,7 @@
     .cell:nth-child(66),.cell:nth-child(69),
     .cell:nth-child(75),.cell:nth-child(78),
     .cell:nth-child(84),.cell:nth-child(87){
-      border-right: 4px solid #222;
+      border-right: 4px solid #402F3F;
     }
     .cell:nth-child(19),.cell:nth-child(20),.cell:nth-child(21),
     .cell:nth-child(22),.cell:nth-child(23),.cell:nth-child(24),
@@ -82,7 +95,7 @@
     .cell:nth-child(49),.cell:nth-child(50),.cell:nth-child(51),
     .cell:nth-child(52),.cell:nth-child(53),.cell:nth-child(54)
     {
-      border-bottom: 4px solid #222;
+      border-bottom: 4px solid #402F3F;
     }
     .solve,.clear {
       float: left;
@@ -94,15 +107,15 @@
     }
     .solve,.clear,.select {
       background: none;
-      border: 2px solid #222;
-      color: #444;
+      border: 2px solid #402F3F;
+      color: #402F3F;
       font-size: 18px;
       font-weight: bold;
       outline-style: none;
     }
-    .select.selected {
-      background: #222;
-      color: #fff;
+    .solve:active,.clear:active,.select.selected {
+      background: #402F3F;
+      color: #E3E6D9;
     }
     @media (min-width:590px)  { 
       .hint {
@@ -116,6 +129,5 @@
 </head>
 <body>
   <script type="text/javascript" src="./build/sudoku.js"></script>
-  <script type="text/javascript" src="./build/solver.js"></script>
 </body>
 </html>

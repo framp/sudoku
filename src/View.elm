@@ -1,6 +1,6 @@
 module View exposing (view)
 
-import Types exposing (..)
+import Model exposing (..)
 
 import Set exposing (Set)
 import Array exposing (Array)
@@ -25,11 +25,11 @@ viewBoard selectMode model =
     <| Array.indexedMap (viewCell selectMode) model
 
 viewCell : Bool -> CellIndex -> Cell -> Html Msg
-viewCell selectMode index { selected, hints } = 
+viewCell selectMode index { selected, hints, valid } = 
   case selected of
     Just val -> 
       div (List.concat
-        [ [ class "cell filled-cell" ]
+        [ [ class <| if valid then "cell filled-cell" else "cell filled-cell invalid" ]
         , if selectMode then [onClick (Deselect index)] else [] ])
         [ text (toString val) ]
     Nothing -> 
