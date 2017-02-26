@@ -2,6 +2,9 @@ module Model exposing (..)
 
 import Array exposing (Array)
 import Set exposing (Set)
+import Json.Encode exposing (..)
+import Json.Decode exposing (..)
+import Json.Decode.Pipeline exposing (..)
 
 type alias Board = Array Cell
 type alias Game = 
@@ -13,7 +16,7 @@ type alias Cell =
   , valid: Bool }
 type alias CellIndex = Int
 type alias Hint = Int
-type alias Flags = Maybe (Array Int)
+type alias Flags = String
 
 type Msg
     = InsertHint Int CellIndex
@@ -38,6 +41,45 @@ fromCell { selected } =
   case selected of
     Nothing -> 0
     Just n -> n
+
+toBoard : Array Int -> Board 
+toBoard = Array.map toCell >> validateBoard
+
+fromBoard : Board -> Array Int
+fromBoard = Array.map fromCell
+
+set : Decoder comparable -> Decoder (Set comparable)
+set decoder = (Json.Decode.list decoder) 
+  |> andThen (Set.fromList >> succeed)
+
+cellDecoder : Decoder Cell
+cellDecoder = decode Cell
+    |> required "selected" (nullable Json.Decode.int)
+    |> required "hints" (set Json.Decode.int)
+    |> hardcoded True
+
+boardDecoder : Decoder Board
+boardDecoder = Json.Decode.array cellDecoder
+
+decodeBoard : String -> Result String Board
+decodeBoard = decodeString boardDecoder
+
+cellEncoder : Cell -> Json.Encode.Value
+cellEncoder { selected, hints } =
+  Json.Encode.object 
+    [ ("selected", case selected of
+      Nothing -> Json.Encode.null
+      Just n -> Json.Encode.int n) 
+    , ("hints", Json.Encode.list 
+      <| List.map Json.Encode.int (Set.toList hints) )]
+
+boardEncoder : Array Cell -> Json.Encode.Value
+boardEncoder board = 
+  Json.Encode.array 
+    <| Array.map cellEncoder board
+
+encodeBoard : Board -> String
+encodeBoard board = encode 0 (boardEncoder board)
 
 validateBoard : Board -> Board
 validateBoard board = 
@@ -65,14 +107,11 @@ validateBoard board =
   in
     Array.foldl updateValidity board <| Array.indexedMap (,) board
 
-toBoard : Array Int -> Board 
-toBoard = Array.map toCell >> validateBoard
-
-fromBoard : Board -> Array Int
-fromBoard = Array.map fromCell
-
 emptyBoard : Board
 emptyBoard = Array.repeat 81 { hints = Set.empty, selected = Nothing, valid = False }
+
+isEmptyBoard : Board -> Bool
+isEmptyBoard board = List.all (\{ selected } -> selected == Nothing) <| Array.toList board
 
 heart : Array Int
 heart = Array.fromList [

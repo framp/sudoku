@@ -6,11 +6,17 @@ import Maybe exposing (map, withDefault)
 import Model exposing (..)
 
 port solve : Array Int -> Cmd msg
-port save : Array Int -> Cmd msg
+port save : String -> Cmd msg
 port solutions : (List (Array Int) -> msg) -> Sub msg
 
 init : Flags -> (Game, Cmd Msg)
-init flags = ({ board = toBoard <| (Maybe.withDefault heart) flags, select = False }, Cmd.none)
+init flags = 
+  let 
+    heartBoard = (toBoard heart)
+    savedBoard = Result.withDefault heartBoard (decodeBoard flags)
+    board = if isEmptyBoard savedBoard then heartBoard else savedBoard
+  in
+    ({ board = board, select = False }, Cmd.none)
 
 update : Msg -> Game -> (Game, Cmd Msg)
 update msg model =
@@ -24,7 +30,7 @@ update msg model =
           |> Maybe.map transform 
           |> Maybe.map (\val -> Array.set index val array)
           |> Maybe.withDefault array
-    saveGame game = (game, save <| fromBoard game.board)
+    saveGame game = (game, save <| encodeBoard game.board)
   in
     case msg of
       InsertHint number cellIndex -> saveGame { model | board =
