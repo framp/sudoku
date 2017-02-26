@@ -16,7 +16,7 @@ init flags =
     savedBoard = Result.withDefault heartBoard (decodeBoard flags)
     board = if isEmptyBoard savedBoard then heartBoard else savedBoard
   in
-    ({ board = board, select = False }, Cmd.none)
+    ({ board = validateBoard board, select = False }, Cmd.none)
 
 update : Msg -> Game -> (Game, Cmd Msg)
 update msg model =

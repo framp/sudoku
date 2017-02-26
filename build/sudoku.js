@@ -9045,7 +9045,10 @@ var _user$project$State$init = function (flags) {
 	var board = _user$project$Model$isEmptyBoard(savedBoard) ? heartBoard : savedBoard;
 	return {
 		ctor: '_Tuple2',
-		_0: {board: board, select: false},
+		_0: {
+			board: _user$project$Model$validateBoard(board),
+			select: false
+		},
 		_1: _elm_lang$core$Platform_Cmd$none
 	};
 };
