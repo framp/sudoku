@@ -11,6 +11,7 @@ import Html.Events exposing (onClick)
 view : Game -> Html Msg
 view model =
   div [] [ 
+    h1 [] [ text "Sudoku" ],
     div [ class "container" ] [ viewBoard model.select model.board ],
     div [ class "container" ]
       [ button [ class (if model.select then "select selected" else "select")
